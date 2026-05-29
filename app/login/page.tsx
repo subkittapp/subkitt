@@ -62,9 +62,9 @@ export default function AuthPage() {
 
   return (
     <main className="relative min-h-screen bg-[#050505] text-neutral-100 flex items-center justify-center p-6 selection:bg-neutral-800 overflow-hidden">
-      {/* Decorative glows */}
-      <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] rounded-full bg-violet-900/10 blur-[160px] pointer-events-none animate-pulse-glow" />
-      <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] rounded-full bg-indigo-900/10 blur-[160px] pointer-events-none" />
+      {/* Decorative glows (Soft white neutral glows instead of violet/indigo) */}
+      <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] rounded-full bg-neutral-900/10 blur-[160px] pointer-events-none animate-pulse-glow" />
+      <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] rounded-full bg-neutral-950/20 blur-[160px] pointer-events-none" />
 
       <div className="w-full max-w-md z-10 space-y-6">
         {/* Back navigation */}
@@ -79,7 +79,8 @@ export default function AuthPage() {
 
         {/* Auth Card */}
         <div className="glass border border-neutral-800/80 rounded-3xl p-8 md:p-10 shadow-2xl shadow-black/80 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-[100px] h-[100px] bg-violet-600/5 blur-[40px] pointer-events-none" />
+          <div className="absolute top-0 right-0 w-[100px] h-[100px] bg-neutral-100/5 blur-[40px] pointer-events-none" />
+
 
           {/* Heading */}
           <div className="mb-8">

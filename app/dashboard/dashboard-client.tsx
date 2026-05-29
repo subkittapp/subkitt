@@ -125,9 +125,9 @@ export default function DashboardClient({ initialUser, initialBatches }: Dashboa
 
   return (
     <div className="relative min-h-screen bg-[#050505] text-neutral-100 selection:bg-neutral-800 pb-20 overflow-hidden">
-      {/* Background ambient light sources */}
-      <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-violet-900/10 blur-[130px] pointer-events-none animate-pulse-glow" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-900/10 blur-[130px] pointer-events-none" />
+      {/* Background ambient light sources (Soft neutral white/gray shadows instead of violet/indigo) */}
+      <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-neutral-900/10 blur-[130px] pointer-events-none animate-pulse-glow" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-neutral-950/20 blur-[130px] pointer-events-none" />
 
       {/* Main Container */}
       <div className="max-w-5xl mx-auto px-6 pt-8 z-10 relative space-y-8">
@@ -135,7 +135,7 @@ export default function DashboardClient({ initialUser, initialBatches }: Dashboa
         {/* Navigation & Brand */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-neutral-900 pb-6">
           <div className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center font-bold text-white shadow-md shadow-indigo-500/10">
+            <div className="h-9 w-9 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center font-bold text-white shadow-md">
               S
             </div>
             <div>
@@ -143,6 +143,7 @@ export default function DashboardClient({ initialUser, initialBatches }: Dashboa
               <p className="text-[11px] text-neutral-500">Manage pipeline settings and historical drafts.</p>
             </div>
           </div>
+
 
           <div className="flex items-center gap-3">
             <a
@@ -177,11 +178,12 @@ export default function DashboardClient({ initialUser, initialBatches }: Dashboa
           <div className="glass border border-neutral-900 rounded-2xl p-5 flex flex-col justify-between h-28 hover:border-neutral-800 transition duration-300">
             <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-500">Active AI Engine</span>
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-violet-500" />
+              <span className="w-2 h-2 rounded-full bg-green-500" />
               <span className="text-sm font-semibold text-neutral-200 capitalize">{user.ai_provider || 'Gemini'} ({user.writing_tone || 'Default'})</span>
             </div>
             <span className="text-[10px] text-neutral-500">Configured provider & tone style</span>
           </div>
+
 
           {/* Batches Count */}
           <div className="glass border border-neutral-900 rounded-2xl p-5 flex flex-col justify-between h-28 hover:border-neutral-800 transition duration-300">

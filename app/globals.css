@@ -49,8 +49,8 @@ body {
 }
 
 .glow-card:hover {
-  box-shadow: 0 0 40px -10px rgba(124, 58, 237, 0.12);
-  border-color: rgba(124, 58, 237, 0.3);
+  box-shadow: 0 0 40px -10px rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 .glow-card-green:hover {
@@ -59,8 +59,9 @@ body {
 }
 
 .glass {
-  background: rgba(10, 10, 10, 0.7);
+  background: rgba(10, 10, 10, 0.8);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
+
 
