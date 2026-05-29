@@ -1,12 +1,13 @@
 import { getLastWeekCommits } from './github'
 import { filterCommits } from './filter'
-import { generateDrafts } from './claude'
+import { generateDraftsWithAI, type AIProvider } from './ai'
 import { sendDraftsEmail } from './email'
 
 interface User {
   github_username: string
   github_email: string
   access_token: string
+  ai_provider?: string
 }
 
 export async function runPipeline(user: User): Promise<{
@@ -23,7 +24,8 @@ export async function runPipeline(user: User): Promise<{
 
     if (filtered.length === 0) return { status: 'no_commits' }
 
-    const drafts = await generateDrafts(filtered)
+    const provider = (user.ai_provider || process.env.DEFAULT_AI_PROVIDER || 'anthropic') as AIProvider
+    const drafts = await generateDraftsWithAI(filtered, provider)
     if (drafts.length === 0) return { status: 'no_drafts' }
 
     await sendDraftsEmail(user.github_email, user.github_username, drafts)

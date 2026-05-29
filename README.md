@@ -10,12 +10,12 @@ Day 3 of building in public. Pre-MVP. Currently validating with 20+ founder conv
 
 ## Tech
 
-- Next.js 15 (App Router)
+- Next.js 16 (App Router)
 - TypeScript
 - Tailwind CSS
-- Supabase (coming)
-- Claude Haiku 4.5 (coming)
-- Stripe (coming)
+- Supabase (integrated)
+- Gemini / OpenAI / Anthropic (integrated)
+- Resend Emails (integrated)
 
 ## Journey
 
