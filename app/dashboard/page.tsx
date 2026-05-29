@@ -1,11 +1,13 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { createServerClient } from '@/lib/supabase-server'
+import { verifySession } from '@/lib/session'
 import TestButton from './test-button'
 
 export default async function Dashboard() {
   const cookieStore = await cookies()
-  const userId = cookieStore.get('user_id')?.value
+  const sessionCookie = cookieStore.get('user_id')?.value
+  const userId = verifySession(sessionCookie)
   if (!userId) redirect('/')
 
   const supabase = createServerClient()

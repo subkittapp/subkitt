@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase-server'
+import { signSession } from '@/lib/session'
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL!
 
@@ -30,9 +31,21 @@ export async function GET(req: NextRequest) {
     }),
   ])
 
+  if (!userRes.ok || !emailRes.ok) {
+    console.error('GitHub API error user:', userRes.status, 'email:', emailRes.status)
+    return NextResponse.redirect(`${APP_URL}/?error=github_api_error`)
+  }
+
   const githubUser = await userRes.json()
-  const emails: { email: string; primary: boolean }[] = await emailRes.json()
-  const primaryEmail = emails.find(e => e.primary)?.email ?? null
+  const emails = await emailRes.json()
+
+  if (!githubUser || !githubUser.id) {
+    return NextResponse.redirect(`${APP_URL}/?error=github_user_error`)
+  }
+
+  const primaryEmail = Array.isArray(emails)
+    ? (emails.find((e: any) => e.primary)?.email ?? null)
+    : null
 
   // Upsert user in Supabase
   const supabase = createServerClient()
@@ -57,7 +70,8 @@ export async function GET(req: NextRequest) {
   }
 
   const response = NextResponse.redirect(`${APP_URL}/dashboard`)
-  response.cookies.set('user_id', user.id, {
+  const signedSessionVal = signSession(user.id)
+  response.cookies.set('user_id', signedSessionVal, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',

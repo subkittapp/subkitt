@@ -16,9 +16,10 @@ export async function sendDraftsEmail(
     )
     .join('')
 
+  const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev'
   const resend = new Resend(process.env.RESEND_API_KEY)
   await resend.emails.send({
-    from: 'SubKitt <drafts@subkitt.com>',
+    from: `SubKitt <${fromEmail}>`,
     to,
     subject: 'Your Monday SubKitt drafts',
     html: `<!DOCTYPE html>

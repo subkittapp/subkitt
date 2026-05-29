@@ -15,7 +15,7 @@ export async function generateDrafts(
 
   const client = new Anthropic()
   const message = await client.messages.create({
-    model: 'claude-haiku-4-5-20251001',
+    model: 'claude-3-5-haiku-20241022',
     max_tokens: 1024,
     messages: [
       {
@@ -31,13 +31,14 @@ Return ONLY the 5 tweets, numbered 1-5, one per line. No preamble, no explanatio
     ],
   })
 
+  if (!message.content || message.content.length === 0) return []
   const content = message.content[0]
   if (content.type !== 'text') return []
 
   return content.text
     .split('\n')
-    .filter(line => /^\d+\./.test(line.trim()))
-    .map(line => line.replace(/^\d+\.\s*/, '').trim())
+    .filter(line => /^\d+[\.\-\)]/.test(line.trim()))
+    .map(line => line.replace(/^\d+[\.\-\)]\s*/, '').trim())
     .filter(Boolean)
     .slice(0, 5)
 }

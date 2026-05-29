@@ -7,7 +7,7 @@ export interface Commit {
   filesChanged: string[]
 }
 
-const BORING: RegExp[] = [
+export const BORING: RegExp[] = [
   /^fix:\s*(typo|spelling|grammar|whitespace|formatting)/i,
   /^chore:/i,
   /^bump version/i,
@@ -39,8 +39,8 @@ export function filterCommits(commits: Commit[]): Commit[] {
     const totalLines = commit.additions + commit.deletions
 
     if (BORING.some(p => p.test(msg))) return false
-    if (totalLines < 10) return false
     if (INTERESTING.some(p => p.test(msg))) return true
+    if (totalLines < 10) return false
     if (totalLines >= 50) return true
 
     return false

@@ -3,7 +3,8 @@ import { createServerClient } from '@/lib/supabase-server'
 import { runPipeline } from '@/lib/pipeline'
 
 export async function GET(req: NextRequest) {
-  if (req.headers.get('authorization') !== `Bearer ${process.env.CRON_SECRET}`) {
+  const cronSecret = process.env.CRON_SECRET
+  if (!cronSecret || req.headers.get('authorization') !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -19,7 +20,7 @@ export async function GET(req: NextRequest) {
   }
 
   const results = await Promise.all(
-    users.map(async user => ({
+    users.map(async (user: any) => ({
       user: user.github_username,
       ...(await runPipeline(user)),
     }))
