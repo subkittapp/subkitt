@@ -28,6 +28,11 @@ export async function runPipeline(user: User): Promise<{
     const drafts = await generateDraftsWithAI(filtered, provider)
     if (drafts.length === 0) return { status: 'no_drafts' }
 
+    console.log('\n====================================')
+    console.log(`📝 GENERATED TWEET DRAFTS FOR @${user.github_username}:`)
+    drafts.forEach((d, i) => console.log(`${i + 1}. ${d}`))
+    console.log('====================================\n')
+
     await sendDraftsEmail(user.github_email, user.github_username, drafts)
     return { status: 'sent', drafts }
   } catch (err) {

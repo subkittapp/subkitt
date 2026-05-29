@@ -18,7 +18,7 @@ export async function sendDraftsEmail(
 
   const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev'
   const resend = new Resend(process.env.RESEND_API_KEY)
-  await resend.emails.send({
+  const { data, error } = await resend.emails.send({
     from: `SubKitt <${fromEmail}>`,
     to,
     subject: 'Your Monday SubKitt drafts',
@@ -34,4 +34,9 @@ export async function sendDraftsEmail(
 </body>
 </html>`,
   })
+
+  if (error) {
+    console.error('Resend delivery error:', error)
+    throw new Error(error.message || 'Unknown Resend error')
+  }
 }
