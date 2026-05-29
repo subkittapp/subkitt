@@ -2,9 +2,12 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { createBrowserClient } from '@/lib/supabase/client'
 
 export default function AuthPage() {
   const router = useRouter()
+  const supabase = createBrowserClient()
+
   const [mode, setMode] = useState<'login' | 'signup'>('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -18,26 +21,47 @@ export default function AuthPage() {
     setLoading(true)
     setErrorMsg('')
 
-    const endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth/signup'
-
     try {
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      })
+      const emailClean = email.toLowerCase().trim()
 
-      const data = await res.json()
+      if (mode === 'login') {
+        const { error } = await supabase.auth.signInWithPassword({
+          email: emailClean,
+          password,
+        })
 
-      if (!res.ok) {
-        setErrorMsg(data.error || 'Something went wrong. Please check your credentials.')
+        if (error) {
+          setErrorMsg(error.message)
+        } else {
+          router.push('/dashboard')
+          router.refresh()
+        }
       } else {
-        // Successful signup/login
-        router.push('/dashboard')
-        router.refresh()
+        const { data, error } = await supabase.auth.signUp({
+          email: emailClean,
+          password,
+          options: {
+            // Automatically insert email/created_at to public.users via triggers, 
+            // or we insert manually. Supabase Auth signs up the user in auth.users.
+            // Note: Since auth.users is separate from public.users, we can insert 
+            // the user details into public.users if the DB has a trigger, or do it on login.
+          }
+        })
+
+        if (error) {
+          setErrorMsg(error.message)
+        } else {
+          // If session is active immediately (email confirmation disabled)
+          if (data?.session) {
+            router.push('/dashboard')
+            router.refresh()
+          } else {
+            setErrorMsg('Account created! Please check your email to confirm registration or sign in if confirmation is disabled.')
+          }
+        }
       }
     } catch (err) {
-      setErrorMsg('Failed to connect to the authentication server.')
+      setErrorMsg('An unexpected authentication error occurred.')
     } finally {
       setLoading(false)
     }
@@ -131,7 +155,7 @@ export default function AuthPage() {
 
         {/* Info */}
         <p className="text-center text-xs text-neutral-600 mt-6 leading-relaxed">
-          *Note: After signing up, verify columns email & password_hash exist in your Supabase users table.
+          Powered by Supabase Auth.
         </p>
       </div>
     </main>

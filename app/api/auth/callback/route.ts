@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@/lib/supabase-server'
-import { signSession, verifySession } from '@/lib/session'
+import { createClient } from '@/lib/supabase/server'
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL!
 
@@ -47,11 +46,11 @@ export async function GET(req: NextRequest) {
     ? (emails.find((e: any) => e.primary)?.email ?? null)
     : null
 
-  const supabase = createServerClient()
+  const supabase = await createClient()
   
-  // Check if there is an active session to link the GitHub account to
-  const sessionCookie = req.cookies.get('user_id')?.value
-  const loggedInUserId = verifySession(sessionCookie)
+  // Check if there is an active Supabase Auth session to link the GitHub account to
+  const { data: { user: authUser } } = await supabase.auth.getUser()
+  const loggedInUserId = authUser?.id
 
   let user: any = null
   let dbError: any = null
@@ -99,14 +98,5 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(`${APP_URL}/?error=db_error`)
   }
 
-  const response = NextResponse.redirect(`${APP_URL}/dashboard`)
-  const signedSessionVal = signSession(user.id)
-  response.cookies.set('user_id', signedSessionVal, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: 60 * 60 * 24 * 30,
-    path: '/',
-  })
-  return response
+  return NextResponse.redirect(`${APP_URL}/dashboard`)
 }

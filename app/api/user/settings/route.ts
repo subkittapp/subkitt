@@ -1,18 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@/lib/supabase-server'
-import { verifySession } from '@/lib/session'
+import { createClient } from '@/lib/supabase/server'
 
 export async function POST(req: NextRequest) {
   try {
-    const sessionCookie = req.cookies.get('user_id')?.value
-    const userId = verifySession(sessionCookie)
-    if (!userId) {
+    const supabase = await createClient()
+    const { data: { user: authUser } } = await supabase.auth.getUser()
+    if (!authUser) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
     }
 
+    const userId = authUser.id
     const { ai_provider, writing_tone } = await req.json()
-
-    const supabase = createServerClient()
     const { data, error } = await supabase
       .from('users')
       .update({

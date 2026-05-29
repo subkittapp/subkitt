@@ -1,16 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@/lib/supabase-server'
+import { createClient } from '@/lib/supabase/server'
 import { runPipeline } from '@/lib/pipeline'
-import { verifySession } from '@/lib/session'
 
 export async function POST(req: NextRequest) {
-  const sessionCookie = req.cookies.get('user_id')?.value
-  const userId = verifySession(sessionCookie)
-  if (!userId) {
+  const supabase = await createClient()
+  const { data: { user: authUser } } = await supabase.auth.getUser()
+  if (!authUser) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
   }
 
-  const supabase = createServerClient()
+  const userId = authUser.id
   const { data: user, error } = await supabase
     .from('users')
     .select('github_username, github_email, access_token, ai_provider, writing_tone')
