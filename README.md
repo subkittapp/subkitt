@@ -25,3 +25,5 @@ Day 3 of building in public. Pre-MVP. Currently validating with 20+ founder conv
 ## License
 
 Source-available for now. Not open-source. No commercial use.
+
+<!-- Build-Verification-Tag: 1 -->
