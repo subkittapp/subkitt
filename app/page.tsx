@@ -223,6 +223,10 @@ export default function Home() {
         </div>
 
         <div className="flex items-center gap-4 text-xs font-mono text-neutral-500 shrink-0">
+          <a href="/brand" className="hover:text-neutral-300 transition-colors">
+            Brand System
+          </a>
+          <span>·</span>
           <a href="https://x.com/CheemaEdu" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-300 transition-colors">
             X (Twitter)
           </a>
@@ -231,6 +235,7 @@ export default function Home() {
             GitHub
           </a>
         </div>
+
       </footer>
     </main>
   );
