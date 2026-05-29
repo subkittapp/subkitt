@@ -14,7 +14,7 @@ export default async function Dashboard() {
   // Retrieve public profile row
   let { data: userProfile, error: profileError } = await supabase
     .from('users')
-    .select('github_username, github_email, ai_provider, writing_tone')
+    .select('id, github_username, github_email, ai_provider, writing_tone, gemini_api_key, openai_api_key, anthropic_api_key')
     .eq('id', authUser.id)
     .single()
 
@@ -27,7 +27,7 @@ export default async function Dashboard() {
         email: authUser.email || '',
         updated_at: new Date().toISOString(),
       })
-      .select('github_username, github_email, ai_provider, writing_tone')
+      .select('id, github_username, github_email, ai_provider, writing_tone, gemini_api_key, openai_api_key, anthropic_api_key')
       .single()
 
     if (createError || !newProfile) {
@@ -37,9 +37,16 @@ export default async function Dashboard() {
     userProfile = newProfile
   }
 
+  // Fetch user's previous generated drafts history
+  const { data: batches } = await supabase
+    .from('draft_batches')
+    .select('*')
+    .eq('user_id', authUser.id)
+    .order('created_at', { ascending: false })
+
   return (
     <main className="min-h-screen bg-neutral-950 text-neutral-100 selection:bg-neutral-800">
-      <DashboardClient initialUser={userProfile} />
+      <DashboardClient initialUser={userProfile} initialBatches={batches || []} />
     </main>
   )
 }

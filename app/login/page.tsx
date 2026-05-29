@@ -61,28 +61,49 @@ export default function AuthPage() {
   }
 
   return (
-    <main className="min-h-screen bg-neutral-950 text-neutral-100 flex items-center justify-center p-6 selection:bg-neutral-800">
-      <div className="w-full max-w-md">
-        {/* Branding */}
-        <div className="text-center mb-8">
-          <a href="/" className="inline-flex items-center gap-2 border border-neutral-800/80 rounded-full px-3 py-1 mb-4 bg-neutral-900/40 hover:border-neutral-700 transition">
-            <span className="text-xs text-neutral-400 tracking-wide">← Back to Home</span>
+    <main className="relative min-h-screen bg-[#050505] text-neutral-100 flex items-center justify-center p-6 selection:bg-neutral-800 overflow-hidden">
+      {/* Decorative glows */}
+      <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] rounded-full bg-violet-900/10 blur-[160px] pointer-events-none animate-pulse-glow" />
+      <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] rounded-full bg-indigo-900/10 blur-[160px] pointer-events-none" />
+
+      <div className="w-full max-w-md z-10 space-y-6">
+        {/* Back navigation */}
+        <div className="text-center">
+          <a
+            href="/"
+            className="inline-flex items-center gap-1.5 border border-neutral-900 bg-neutral-950/60 hover:bg-neutral-900 hover:border-neutral-800 rounded-full px-4 py-1.5 transition text-xs text-neutral-400"
+          >
+            <span>←</span> Back to home page
           </a>
-          <h1 className="text-4xl font-black tracking-tight text-neutral-100 mt-2">SubKitt</h1>
-          <p className="mt-2 text-neutral-400 text-sm">You ship. Your work turns into inbound.</p>
         </div>
 
         {/* Auth Card */}
-        <div className="bg-neutral-900 border border-neutral-800/80 rounded-2xl p-8 shadow-xl shadow-black/40">
-          {/* Tabs */}
-          <div className="flex bg-neutral-950 border border-neutral-800/60 p-1 rounded-xl mb-6">
+        <div className="glass border border-neutral-800/80 rounded-3xl p-8 md:p-10 shadow-2xl shadow-black/80 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-[100px] h-[100px] bg-violet-600/5 blur-[40px] pointer-events-none" />
+
+          {/* Heading */}
+          <div className="mb-8">
+            <h1 className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white to-neutral-400 bg-clip-text text-transparent">
+              {mode === 'login' ? 'Welcome back' : 'Create your account'}
+            </h1>
+            <p className="text-xs text-neutral-400 mt-1">
+              {mode === 'login'
+                ? 'Sign in to access your SubKitt dashboard & history.'
+                : 'Get 5 drafts written automatically from your code commits.'}
+            </p>
+          </div>
+
+          {/* Tab Switcher */}
+          <div className="flex bg-neutral-950/80 border border-neutral-900 p-1 rounded-xl mb-6">
             <button
               onClick={() => {
                 setMode('login')
                 setErrorMsg('')
               }}
-              className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${
-                mode === 'login' ? 'bg-neutral-800 text-neutral-100 border border-neutral-700/40' : 'text-neutral-500 hover:text-neutral-300'
+              className={`flex-grow py-2 text-xs font-semibold rounded-lg transition-all duration-200 ${
+                mode === 'login'
+                  ? 'bg-neutral-900 text-neutral-100 border border-neutral-800/60 shadow-sm'
+                  : 'text-neutral-500 hover:text-neutral-300'
               }`}
             >
               Sign In
@@ -92,31 +113,33 @@ export default function AuthPage() {
                 setMode('signup')
                 setErrorMsg('')
               }}
-              className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${
-                mode === 'signup' ? 'bg-neutral-800 text-neutral-100 border border-neutral-700/40' : 'text-neutral-500 hover:text-neutral-300'
+              className={`flex-grow py-2 text-xs font-semibold rounded-lg transition-all duration-200 ${
+                mode === 'signup'
+                  ? 'bg-neutral-900 text-neutral-100 border border-neutral-800/60 shadow-sm'
+                  : 'text-neutral-500 hover:text-neutral-300'
               }`}
             >
-              Create Account
+              Register
             </button>
           </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-mono text-neutral-500 uppercase tracking-widest mb-1.5">Email Address</label>
+              <label className="block text-[10px] font-mono text-neutral-500 uppercase tracking-widest mb-1.5">Email Address</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder="name@company.com"
                 required
                 disabled={loading}
-                className="w-full bg-neutral-950 border border-neutral-800 focus:border-neutral-700 rounded-xl px-4 py-3 text-neutral-100 placeholder:text-neutral-600 focus:outline-none disabled:opacity-50 text-sm"
+                className="w-full bg-neutral-950/60 border border-neutral-800 focus:border-neutral-700 rounded-xl px-4 py-3 text-neutral-200 placeholder:text-neutral-700 focus:outline-none disabled:opacity-50 text-xs transition-colors duration-300"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-mono text-neutral-500 uppercase tracking-widest mb-1.5">Password</label>
+              <label className="block text-[10px] font-mono text-neutral-500 uppercase tracking-widest mb-1.5">Password</label>
               <input
                 type="password"
                 value={password}
@@ -124,30 +147,29 @@ export default function AuthPage() {
                 placeholder="••••••••"
                 required
                 disabled={loading}
-                className="w-full bg-neutral-950 border border-neutral-800 focus:border-neutral-700 rounded-xl px-4 py-3 text-neutral-100 placeholder:text-neutral-600 focus:outline-none disabled:opacity-50 text-sm"
+                className="w-full bg-neutral-950/60 border border-neutral-800 focus:border-neutral-700 rounded-xl px-4 py-3 text-neutral-200 placeholder:text-neutral-700 focus:outline-none disabled:opacity-50 text-xs transition-colors duration-300"
               />
             </div>
 
             {errorMsg && (
-              <div className="bg-red-950/30 border border-red-900/60 p-3.5 rounded-xl text-red-400 text-xs leading-relaxed flex gap-2">
+              <div className="bg-red-950/20 border border-red-900/60 p-3.5 rounded-xl text-red-400 text-xs leading-relaxed flex gap-2.5 animate-fadeIn">
                 <span className="font-bold">⚠</span>
-                <span>{errorMsg}</span>
+                <span className="opacity-90">{errorMsg}</span>
               </div>
             )}
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-neutral-100 hover:bg-white text-neutral-950 font-bold py-3.5 rounded-xl transition disabled:opacity-50 text-sm mt-2 active:scale-[0.99]"
+              className="w-full bg-neutral-100 hover:bg-white text-neutral-950 font-bold py-3.5 rounded-xl transition duration-300 disabled:opacity-50 text-xs mt-4 shadow-lg shadow-white/5 active:scale-[0.99]"
             >
-              {loading ? 'Processing...' : mode === 'login' ? 'Sign In' : 'Sign Up'}
+              {loading ? 'Authenticating...' : mode === 'login' ? 'Sign In & Enter' : 'Create Account'}
             </button>
           </form>
         </div>
 
-        {/* Info */}
-        <p className="text-center text-xs text-neutral-600 mt-6 leading-relaxed">
-          Powered by Supabase Auth.
+        <p className="text-center text-[10px] font-mono text-neutral-600">
+          Secure authentication managed by Supabase Auth
         </p>
       </div>
     </main>

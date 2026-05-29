@@ -18,7 +18,8 @@ function parseTweets(text: string): string[] {
 export async function generateDraftsWithAI(
   commitGroups: { repo: string; commits: Commit[] }[],
   provider: AIProvider = 'anthropic',
-  tone: string = 'default'
+  tone: string = 'default',
+  userKeys: { gemini?: string; openai?: string; anthropic?: string } = {}
 ): Promise<string[]> {
   const commitSummary = commitGroups
     .flatMap(({ repo, commits }) =>
@@ -50,9 +51,9 @@ Return ONLY the 5 tweets, numbered 1-5, one per line. No preamble, no explanatio
   try {
     switch (provider) {
       case 'openai': {
-        const openai = new OpenAI({
-          apiKey: process.env.OPENAI_API_KEY,
-        })
+        const apiKey = userKeys.openai || process.env.OPENAI_API_KEY
+        if (!apiKey) throw new Error('OpenAI API Key is not configured.')
+        const openai = new OpenAI({ apiKey })
         const completion = await openai.chat.completions.create({
           model: 'gpt-4o-mini',
           messages: [{ role: 'user', content: prompt }],
@@ -63,10 +64,9 @@ Return ONLY the 5 tweets, numbered 1-5, one per line. No preamble, no explanatio
       }
 
       case 'gemini': {
-        // Fallback or explicit key initialization
-        const ai = new GoogleGenAI({
-          apiKey: process.env.GEMINI_API_KEY,
-        })
+        const apiKey = userKeys.gemini || process.env.GEMINI_API_KEY
+        if (!apiKey) throw new Error('Gemini API Key is not configured.')
+        const ai = new GoogleGenAI({ apiKey })
         const response = await ai.models.generateContent({
           model: 'gemini-2.5-flash',
           contents: prompt,
@@ -77,9 +77,9 @@ Return ONLY the 5 tweets, numbered 1-5, one per line. No preamble, no explanatio
 
       case 'anthropic':
       default: {
-        const client = new Anthropic({
-          apiKey: process.env.ANTHROPIC_API_KEY,
-        })
+        const apiKey = userKeys.anthropic || process.env.ANTHROPIC_API_KEY
+        if (!apiKey) throw new Error('Anthropic API Key is not configured.')
+        const client = new Anthropic({ apiKey })
         const message = await client.messages.create({
           model: 'claude-3-5-haiku-20241022',
           max_tokens: 1024,

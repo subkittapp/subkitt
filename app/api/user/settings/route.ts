@@ -10,12 +10,22 @@ export async function POST(req: NextRequest) {
     }
 
     const userId = authUser.id
-    const { ai_provider, writing_tone } = await req.json()
+    const {
+      ai_provider,
+      writing_tone,
+      gemini_api_key,
+      openai_api_key,
+      anthropic_api_key,
+    } = await req.json()
+
     const { data, error } = await supabase
       .from('users')
       .update({
         ai_provider: ai_provider || null,
         writing_tone: writing_tone || null,
+        gemini_api_key: gemini_api_key || null,
+        openai_api_key: openai_api_key || null,
+        anthropic_api_key: anthropic_api_key || null,
         updated_at: new Date().toISOString(),
       })
       .eq('id', userId)

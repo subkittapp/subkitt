@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
   const userId = authUser.id
   const { data: user, error } = await supabase
     .from('users')
-    .select('github_username, github_email, access_token, ai_provider, writing_tone')
+    .select('id, github_username, github_email, access_token, ai_provider, writing_tone, gemini_api_key, openai_api_key, anthropic_api_key')
     .eq('id', userId)
     .single()
 
