@@ -91,46 +91,62 @@ export default function DashboardClient({ initialUser }: DashboardClientProps) {
       {/* Header */}
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-neutral-800 pb-8 mb-10">
         <div>
-          <div className="flex items-center gap-2 text-green-400 mb-2">
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            <span className="text-xs font-semibold uppercase tracking-wider">GitHub Connected as @{user.github_username}</span>
-          </div>
+          {user.github_username ? (
+            <div className="flex items-center gap-2 text-green-400 mb-2">
+              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+              <span className="text-xs font-semibold uppercase tracking-wider">GitHub Connected as @{user.github_username}</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 text-amber-400 mb-2">
+              <span className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
+              <span className="text-xs font-semibold uppercase tracking-wider">Action Required · GitHub Disconnected</span>
+            </div>
+          )}
           <h1 className="text-4xl font-extrabold text-neutral-100 tracking-tight">Founder Dashboard</h1>
           <p className="text-neutral-400 text-sm mt-1">Manage drafts, customize AI models, and review your logs.</p>
         </div>
 
-        {/* Tab Controls */}
-        <div className="bg-neutral-900 border border-neutral-800 p-1.5 rounded-xl flex gap-1">
-          <button
-            onClick={() => setActiveTab('drafts')}
-            className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-              activeTab === 'drafts'
-                ? 'bg-neutral-800 text-neutral-100 border border-neutral-700/50'
-                : 'text-neutral-400 hover:text-neutral-200'
-            }`}
+        {/* Tab Controls & Logout */}
+        <div className="flex items-center gap-3 self-start md:self-auto">
+          <div className="bg-neutral-900 border border-neutral-800 p-1.5 rounded-xl flex gap-1">
+            <button
+              onClick={() => setActiveTab('drafts')}
+              className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+                activeTab === 'drafts'
+                  ? 'bg-neutral-800 text-neutral-100 border border-neutral-700/50'
+                  : 'text-neutral-400 hover:text-neutral-200'
+              }`}
+            >
+              Drafts Panel
+            </button>
+            <button
+              onClick={() => setActiveTab('settings')}
+              className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+                activeTab === 'settings'
+                  ? 'bg-neutral-800 text-neutral-100 border border-neutral-700/50'
+                  : 'text-neutral-400 hover:text-neutral-200'
+              }`}
+            >
+              AI Settings
+            </button>
+            <button
+              onClick={() => setActiveTab('about')}
+              className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+                activeTab === 'about'
+                  ? 'bg-neutral-800 text-neutral-100 border border-neutral-700/50'
+                  : 'text-neutral-400 hover:text-neutral-200'
+              }`}
+            >
+              How it Scans
+            </button>
+          </div>
+          
+          <a
+            href="/api/auth/logout"
+            className="bg-neutral-900 border border-neutral-800 hover:bg-neutral-800 text-neutral-300 font-semibold px-4 py-2.5 rounded-xl transition text-sm whitespace-nowrap active:scale-[0.98]"
           >
-            Drafts Panel
-          </button>
-          <button
-            onClick={() => setActiveTab('settings')}
-            className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-              activeTab === 'settings'
-                ? 'bg-neutral-800 text-neutral-100 border border-neutral-700/50'
-                : 'text-neutral-400 hover:text-neutral-200'
-            }`}
-          >
-            AI Settings
-          </button>
-          <button
-            onClick={() => setActiveTab('about')}
-            className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-              activeTab === 'about'
-                ? 'bg-neutral-800 text-neutral-100 border border-neutral-700/50'
-                : 'text-neutral-400 hover:text-neutral-200'
-            }`}
-          >
-            How it Scans
-          </button>
+            Logout
+          </a>
         </div>
       </header>
 
@@ -140,22 +156,40 @@ export default function DashboardClient({ initialUser }: DashboardClientProps) {
         {activeTab === 'drafts' && (
           <div className="space-y-8 animate-fadeIn">
             {/* Generate Action Card */}
-            <div className="bg-gradient-to-br from-neutral-900 via-neutral-900 to-neutral-950 border border-neutral-800 rounded-2xl p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div>
-                <h2 className="text-xl font-bold text-neutral-100">Fetch & Generate Drafts</h2>
-                <p className="text-neutral-400 text-sm mt-1 max-w-lg">
-                  SubKitt will scan your GitHub commits pushed in the last 7 days and use **{user.ai_provider || 'gemini'}** in **{user.writing_tone || 'default'}** tone to compile 5 tweets.
-                </p>
-              </div>
+            {!user.github_username ? (
+              <div className="bg-gradient-to-br from-neutral-900 via-neutral-900 to-neutral-950 border border-neutral-800 rounded-2xl p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div>
+                  <h2 className="text-xl font-bold text-neutral-100">Connect GitHub to Start</h2>
+                  <p className="text-neutral-400 text-sm mt-1 max-w-lg">
+                    Before generating tweet drafts, you need to connect your GitHub account. SubKitt will analyze commits in your repositories.
+                  </p>
+                </div>
 
-              <button
-                onClick={handleGenerate}
-                disabled={status === 'loading'}
-                className="bg-neutral-100 text-neutral-950 font-bold px-6 py-3.5 rounded-xl hover:bg-white transition-all disabled:opacity-50 text-sm shrink-0 shadow-lg shadow-white/5 active:scale-[0.98]"
-              >
-                {status === 'loading' ? 'Generating drafts...' : 'Generate test batch now'}
-              </button>
-            </div>
+                <a
+                  href="/api/auth/github"
+                  className="bg-neutral-100 text-neutral-950 font-bold px-6 py-3.5 rounded-xl hover:bg-white transition-all text-sm shrink-0 shadow-lg shadow-white/5 active:scale-[0.98]"
+                >
+                  Connect GitHub account
+                </a>
+              </div>
+            ) : (
+              <div className="bg-gradient-to-br from-neutral-900 via-neutral-900 to-neutral-950 border border-neutral-800 rounded-2xl p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div>
+                  <h2 className="text-xl font-bold text-neutral-100">Fetch & Generate Drafts</h2>
+                  <p className="text-neutral-400 text-sm mt-1 max-w-lg">
+                    SubKitt will scan your GitHub commits pushed in the last 7 days and use **{user.ai_provider || 'gemini'}** in **{user.writing_tone || 'default'}** tone to compile 5 tweets.
+                  </p>
+                </div>
+
+                <button
+                  onClick={handleGenerate}
+                  disabled={status === 'loading'}
+                  className="bg-neutral-100 text-neutral-950 font-bold px-6 py-3.5 rounded-xl hover:bg-white transition-all disabled:opacity-50 text-sm shrink-0 shadow-lg shadow-white/5 active:scale-[0.98]"
+                >
+                  {status === 'loading' ? 'Generating drafts...' : 'Generate test batch now'}
+                </button>
+              </div>
+            )}
 
             {/* Notifications */}
             {message && (

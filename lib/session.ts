@@ -32,3 +32,13 @@ export function verifySession(signedValue: string | undefined): string | null {
   }
   return null
 }
+
+/**
+ * Basic cryptographic hash function to secure passwords.
+ */
+export function hashPassword(password: string): string {
+  const salt = 'subkitt-salt-key-9876'
+  const hash = crypto.createHash('sha256')
+  hash.update(password + salt)
+  return hash.digest('hex')
+}

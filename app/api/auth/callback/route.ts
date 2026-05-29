@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase-server'
-import { signSession } from '@/lib/session'
+import { signSession, verifySession } from '@/lib/session'
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL!
 
@@ -47,25 +47,55 @@ export async function GET(req: NextRequest) {
     ? (emails.find((e: any) => e.primary)?.email ?? null)
     : null
 
-  // Upsert user in Supabase
   const supabase = createServerClient()
-  const { data: user, error } = await supabase
-    .from('users')
-    .upsert(
-      {
+  
+  // Check if there is an active session to link the GitHub account to
+  const sessionCookie = req.cookies.get('user_id')?.value
+  const loggedInUserId = verifySession(sessionCookie)
+
+  let user: any = null
+  let dbError: any = null
+
+  if (loggedInUserId) {
+    // User is logged in, update their existing record to link GitHub
+    const { data, error } = await supabase
+      .from('users')
+      .update({
         github_id: githubUser.id,
         github_username: githubUser.login,
         github_email: primaryEmail,
         access_token,
         updated_at: new Date().toISOString(),
-      },
-      { onConflict: 'github_id' }
-    )
-    .select()
-    .single()
+      })
+      .eq('id', loggedInUserId)
+      .select()
+      .single()
 
-  if (error || !user) {
-    console.error('Supabase upsert error:', error)
+    user = data
+    dbError = error
+  } else {
+    // Legacy flow: standard upsert based on github_id conflict
+    const { data, error } = await supabase
+      .from('users')
+      .upsert(
+        {
+          github_id: githubUser.id,
+          github_username: githubUser.login,
+          github_email: primaryEmail,
+          access_token,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'github_id' }
+      )
+      .select()
+      .single()
+
+    user = data
+    dbError = error
+  }
+
+  if (dbError || !user) {
+    console.error('Supabase update/upsert error:', dbError)
     return NextResponse.redirect(`${APP_URL}/?error=db_error`)
   }
 
