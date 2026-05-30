@@ -3,6 +3,79 @@
 import { useState } from 'react';
 import { createBrowserClient } from '@/lib/supabase/client';
 
+function SubKittLogo() {
+  return (
+    <div className="flex items-center gap-2.5">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="20" height="20">
+        <path
+          d="M47 19 C47 13 38 11 30 13 C20 15.5 17 23 27 27.5 C41 33 44 39 37 46.5 C31 53 21 51.5 17 45"
+          fill="none" stroke="white" strokeWidth="7.5" strokeLinecap="round"
+        />
+      </svg>
+      <span className="font-semibold text-white tracking-tight text-[15px]">SubKitt</span>
+    </div>
+  );
+}
+
+function DemoCard() {
+  return (
+    <div className="rounded-2xl border border-white/[0.09] bg-white/[0.03] overflow-hidden h-full">
+
+      {/* Commit input */}
+      <div className="border-b border-white/[0.07]">
+        <div className="flex items-center gap-2 px-5 py-3 border-b border-white/[0.05]">
+          <div className="flex gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-full bg-white/[0.1]" />
+            <div className="w-2.5 h-2.5 rounded-full bg-white/[0.1]" />
+            <div className="w-2.5 h-2.5 rounded-full bg-white/[0.1]" />
+          </div>
+          <span className="text-[11px] text-neutral-600 font-mono ml-1">git log — last 7 days</span>
+        </div>
+        <div className="px-5 py-4 font-mono space-y-4">
+          <div>
+            <p className="text-[10px] text-neutral-700 mb-1">commit a1b2c3d · 2 days ago</p>
+            <p className="text-[13px] text-green-400">feat: add OAuth flow to settings page</p>
+            <p className="text-[10px] text-neutral-600 mt-1">+847 −12 · 6 files</p>
+          </div>
+          <div className="border-t border-white/[0.05] pt-4">
+            <p className="text-[10px] text-neutral-700 mb-1">commit f8e7d6c · 4 days ago</p>
+            <p className="text-[13px] text-green-400">feat: launch stripe billing</p>
+            <p className="text-[10px] text-neutral-600 mt-1">+1,203 −88 · 11 files</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Divider */}
+      <div className="flex items-center gap-3 px-5 py-2.5">
+        <div className="flex-1 h-px bg-white/[0.06]" />
+        <span className="text-[10px] text-neutral-700 uppercase tracking-widest">SubKitt</span>
+        <div className="flex-1 h-px bg-white/[0.06]" />
+      </div>
+
+      {/* Tweet output */}
+      <div className="border-t border-white/[0.07]">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.05]">
+          <span className="text-[11px] text-neutral-600">Monday drafts</span>
+          <span className="text-[10px] bg-white/[0.06] text-neutral-500 px-2 py-0.5 rounded-full italic">example</span>
+        </div>
+        <div className="divide-y divide-white/[0.05]">
+          {[
+            { n: 1, text: "Just shipped OAuth into SubKitt. If you've ever fought GitHub's token refresh flow on a Tuesday, this one's for you." },
+            { n: 2, text: "Stripe billing is live. Took longer than expected — mostly because I kept second-guessing the subscription logic. Shipped it anyway." },
+          ].map(({ n, text }) => (
+            <div key={n} className="px-5 py-3.5">
+              <span className="text-[10px] text-neutral-700 font-mono block mb-1.5">{n} / 5</span>
+              <p className="text-[13px] text-neutral-200 leading-relaxed">{text}</p>
+            </div>
+          ))}
+          <div className="px-5 py-2.5 text-[11px] text-neutral-700">+ 3 more drafts in your inbox</div>
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
 export default function Home() {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -12,232 +85,200 @@ export default function Home() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email) return;
-
     setStatus('loading');
-
-    const { error } = await supabase
-      .from('waitlist')
-      .insert({
-        email: email.toLowerCase().trim(),
-        referrer: typeof document !== 'undefined' ? document.referrer : null,
-        user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : null,
-      });
-
+    const { error } = await supabase.from('waitlist').insert({
+      email: email.toLowerCase().trim(),
+      referrer: typeof document !== 'undefined' ? document.referrer : null,
+      user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : null,
+    });
     if (error) {
-      if (error.code === '23505') {
-        setStatus('success');
-      } else {
-        setStatus('error');
-        setErrorMsg(error.message);
-      }
+      if (error.code === '23505') setStatus('success');
+      else { setStatus('error'); setErrorMsg(error.message); }
     } else {
       setStatus('success');
     }
   }
 
   return (
-    <main className="relative min-h-screen bg-[#050505] text-neutral-100 selection:bg-neutral-850 overflow-hidden flex flex-col justify-between">
-      {/* Soft neutral glows instead of purple/violet glows */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-neutral-900/10 blur-[150px] pointer-events-none animate-pulse-glow" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-neutral-950/20 blur-[150px] pointer-events-none" />
+    <main className="min-h-screen bg-[#080808] text-white overflow-x-hidden">
 
-      {/* Main navigation / Header */}
-      <nav className="max-w-5xl w-full mx-auto px-6 py-6 flex items-center justify-between z-10">
-        <div className="flex items-center gap-2.5">
-          <img src="/subkitt_icon.png" alt="SubKitt Logo" className="w-8 h-8 rounded-lg border border-neutral-900 shadow-md invert" />
-          <span className="font-bold tracking-tight text-lg bg-gradient-to-r from-white via-neutral-100 to-neutral-400 bg-clip-text text-transparent">SubKitt</span>
+      {/* Ambient glow */}
+      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+        <div className="absolute -top-40 left-1/4 w-[700px] h-[600px] rounded-full bg-white/[0.02] blur-[120px]" />
+      </div>
+
+      {/* Navbar */}
+      <header className="fixed top-0 inset-x-0 z-50 border-b border-white/[0.07] bg-[#080808]/75 backdrop-blur-2xl">
+        <div className="max-w-7xl mx-auto px-8 h-14 flex items-center justify-between">
+          <SubKittLogo />
+          <nav className="hidden md:flex items-center gap-8">
+            <a href="#how" className="text-sm text-neutral-500 hover:text-white transition-colors">How it works</a>
+            <a href="#founder" className="text-sm text-neutral-500 hover:text-white transition-colors">About</a>
+          </nav>
+          <a
+            href="/login"
+            className="flex items-center gap-2 bg-white text-[#080808] text-sm font-semibold px-4 py-2 rounded-lg hover:bg-neutral-200 transition-colors"
+          >
+            Get Started
+          </a>
         </div>
+      </header>
 
+      <div className="relative z-10 max-w-7xl mx-auto px-8">
 
+        {/* Hero — two column */}
+        <section className="pt-32 pb-24 grid lg:grid-cols-[1fr_520px] gap-16 items-center min-h-[90vh]">
 
-        <a
-          href="/login"
-          className="glass border border-neutral-800 hover:border-neutral-700 text-neutral-200 text-xs font-semibold px-4.5 py-2.5 rounded-xl transition-all duration-300 active:scale-[0.98] hover:text-white"
-        >
-          Sign In
-        </a>
-      </nav>
-
-      {/* Hero Body */}
-      <div className="max-w-5xl w-full mx-auto px-6 py-12 md:py-24 z-10 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-        
-        {/* Left column: Copy & philosophy */}
-        <div className="lg:col-span-7 space-y-8">
-          <div className="inline-flex items-center gap-2 bg-neutral-900/60 border border-neutral-800/80 rounded-full px-3.5 py-1.5 backdrop-blur-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[11px] text-neutral-400 font-medium tracking-wide">Waitlist open · 50% off first 50 users</span>
-          </div>
-
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] bg-gradient-to-b from-white via-neutral-100 to-neutral-500 bg-clip-text text-transparent">
-            You ship. <br />
-            Your work turns <br />
-            into inbound.
-          </h1>
-
-          <p className="text-lg md:text-xl text-neutral-400 leading-relaxed max-w-xl">
-            SubKitt drafts your week&apos;s posts directly from what you shipped — keeping you inside your codebase while your audience grows on autopilot.
-          </p>
-
-          {/* Value points */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-4">
-            <div className="flex items-start gap-3">
-              <span className="text-neutral-450 mt-1">✦</span>
-              <p className="text-sm text-neutral-300 leading-relaxed">
-                <strong className="text-neutral-200">Zero writing templates:</strong> Drafts modeled directly from actual code commits.
-              </p>
-            </div>
-            <div className="flex items-start gap-3">
-              <span className="text-emerald-500 mt-1">✦</span>
-              <p className="text-sm text-neutral-300 leading-relaxed">
-                <strong className="text-neutral-200">Set it and forget it:</strong> Every Monday, high-impact tweets land in your inbox.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Right column: Form & Interactive Preview */}
-        <div className="lg:col-span-5 space-y-6">
-          
-          {/* Main Action Box */}
-          <div className="glass border border-neutral-800/80 rounded-3xl p-8 shadow-2xl shadow-black/80 space-y-6 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-[120px] h-[120px] rounded-full bg-neutral-100/5 blur-[50px] pointer-events-none" />
-            
-            <div>
-              <h2 className="text-xl font-bold tracking-tight text-neutral-100">Stop building in silence.</h2>
-              <p className="text-xs text-neutral-400 mt-1.5 leading-relaxed">
-                Create an account to connect your repositories, select your AI model, and preview drafts immediately.
-              </p>
+          {/* Left: text */}
+          <div>
+            <div className="inline-flex items-center gap-2.5 border border-white/[0.1] bg-white/[0.04] rounded-full px-4 py-1.5 mb-10">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shrink-0" />
+              <span className="text-xs text-neutral-400 tracking-wide">Early access · 50% off for first 50</span>
             </div>
 
-            <a
-              href="/login"
-              className="flex items-center justify-center gap-2 bg-neutral-100 hover:bg-white text-neutral-950 font-bold py-3.5 px-6 rounded-2xl transition-all duration-300 shadow-lg shadow-white/5 active:scale-[0.98] text-sm text-center"
-            >
-              Get Started (Sign In / Sign Up) &rarr;
-            </a>
+            <h1 className="text-[56px] lg:text-[72px] xl:text-[80px] font-bold tracking-[-0.03em] leading-[1.04] mb-7">
+              <span className="bg-gradient-to-b from-white via-white to-neutral-600 bg-clip-text text-transparent">
+                You ship.<br />
+                Your work turns<br />
+                into inbound.
+              </span>
+            </h1>
 
-            <div className="relative flex py-2 items-center">
-              <div className="flex-grow border-t border-neutral-800/60"></div>
-              <span className="flex-shrink mx-4 text-xs font-mono text-neutral-600 uppercase tracking-widest">or</span>
-              <div className="flex-grow border-t border-neutral-800/60"></div>
-            </div>
+            <p className="text-[17px] text-neutral-500 max-w-md mb-10 leading-relaxed">
+              SubKitt reads your commits and writes 5 ready-to-post tweet drafts — delivered to your inbox every Monday morning.
+            </p>
 
-            <div className="space-y-4">
-              <p className="text-xs text-neutral-400 font-medium">Join waitlist for feature updates:</p>
-              
+            <div className="flex flex-wrap items-center gap-3 mb-5">
+              <a
+                href="/login"
+                className="flex items-center gap-2.5 bg-white text-[#080808] font-semibold px-6 py-3 rounded-xl text-sm hover:bg-neutral-100 transition-all hover:shadow-[0_0_40px_rgba(255,255,255,0.12)]"
+              >
+                Get Started — it&apos;s free
+              </a>
+
               {status === 'success' ? (
-                <div className="bg-emerald-950/20 border border-emerald-900/60 rounded-xl p-4 text-emerald-400 text-xs flex items-start gap-2.5 animate-fadeIn">
-                  <span className="text-sm mt-0.5">✓</span>
-                  <p className="leading-relaxed">You&apos;re in! We will notify you when SubKitt is ready for your account.</p>
-                </div>
+                <span className="text-sm text-green-400">You&apos;re on the list.</span>
               ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col gap-2.5">
+                <form onSubmit={handleSubmit} className="flex items-center gap-1">
                   <input
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
+                    onChange={e => setEmail(e.target.value)}
+                    placeholder="Or join the waitlist"
                     required
                     disabled={status === 'loading'}
-                    className="w-full bg-neutral-950/60 border border-neutral-800 rounded-xl px-4 py-3 text-neutral-200 placeholder:text-neutral-600 focus:outline-none focus:border-neutral-700 disabled:opacity-50 text-xs transition-colors duration-300"
+                    className="bg-white/[0.05] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder:text-neutral-600 focus:outline-none focus:border-white/[0.25] w-48 disabled:opacity-50 transition-colors"
                   />
                   <button
                     type="submit"
                     disabled={status === 'loading'}
-                    className="w-full bg-neutral-900 border border-neutral-800 text-neutral-200 hover:bg-neutral-800 hover:text-white font-semibold py-3 px-5 rounded-xl transition disabled:opacity-50 text-xs whitespace-nowrap active:scale-[0.99]"
+                    className="text-neutral-500 hover:text-white transition-colors px-3 py-3 text-sm disabled:opacity-40"
                   >
-                    {status === 'loading' ? 'Joining...' : 'Join Waitlist'}
+                    {status === 'loading' ? '···' : '→'}
                   </button>
                 </form>
               )}
-
-              {status === 'error' && (
-                <p className="text-red-400 text-xs mt-2">Something went wrong: {errorMsg}</p>
-              )}
             </div>
+
+            {status === 'error' && <p className="text-red-400 text-xs mb-3">{errorMsg}</p>}
+            <p className="text-xs text-neutral-700">No card required. No spam.</p>
           </div>
 
-          {/* Interactive Commit -> Post Visualization */}
-          <div className="glass border border-neutral-900 rounded-2xl p-5 space-y-4 shadow-xl">
-            <div className="flex items-center justify-between border-b border-neutral-900 pb-3">
-              <span className="text-[10px] uppercase font-mono tracking-widest text-neutral-500">Live Sample Loop</span>
-              <span className="text-[10px] font-mono text-emerald-500 font-bold bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-900/40">Active</span>
-            </div>
-            
-            <div className="space-y-3">
-              <div className="space-y-1">
-                <span className="text-[9px] uppercase font-mono tracking-wider text-neutral-600">Your Commit</span>
-                <div className="bg-neutral-950/80 border border-neutral-800/40 rounded-xl p-3">
-                  <code className="text-xs text-neutral-300 font-mono flex items-center gap-1.5">
-                    <span className="text-neutral-450 font-bold">git commit -m</span> &quot;feat: add OAuth flow to settings page&quot;
-                  </code>
-                </div>
-              </div>
-              
-              <div className="flex justify-center py-1">
-                <div className="w-0.5 h-6 bg-gradient-to-b from-neutral-800 to-neutral-900" />
-              </div>
-
-              <div className="space-y-1">
-                <span className="text-[9px] uppercase font-mono tracking-wider text-neutral-600">SubKitt X Draft</span>
-                <div className="bg-neutral-950/80 border border-neutral-800/40 rounded-xl p-4">
-                  <p className="text-xs text-neutral-200 leading-relaxed font-sans">
-                    Just shipped OAuth into SubKitt. If you&apos;ve ever spent a Tuesday fighting GitHub&apos;s token refresh flow, this one&apos;s for you. ⚡
-                  </p>
-                </div>
-              </div>
-            </div>
+          {/* Right: demo card */}
+          <div className="hidden lg:block">
+            <DemoCard />
           </div>
+        </section>
 
-        </div>
-      </div>
-
-      {/* Philosophy & Timeline section */}
-      <div className="max-w-5xl w-full mx-auto px-6 py-12 md:py-16 z-10 border-t border-neutral-900">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            { n: '01', title: 'Connect GitHub', body: 'Link repositories from your secure dashboard. SubKitt parses commits, filtering logs to isolate features.' },
-            { n: '02', title: 'Select AI & Style', body: 'Input your Gemini, OpenAI, or Claude key. Customize your writing voice—from senior dev to sarcastic shipper.' },
-            { n: '03', title: 'Monday Morning Delivery', body: '5 ready-to-post drafts land in your inbox. Copy, refine, and release to keep building in public.' },
-          ].map(({ n, title, body }) => (
-            <div key={n} className="space-y-2">
-              <div className="text-xs font-mono text-neutral-600">{n}</div>
-              <h3 className="font-bold text-neutral-200 text-sm">{title}</h3>
-              <p className="text-xs text-neutral-400 leading-relaxed">{body}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Footer / Founder note */}
-      <footer className="max-w-5xl w-full mx-auto px-6 py-8 z-10 border-t border-neutral-900/60 flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="flex gap-4 items-start max-w-lg">
-          <div className="w-8 h-8 rounded-full bg-neutral-900 border border-neutral-800 shrink-0 flex items-center justify-center text-xs font-bold text-neutral-400">H</div>
-          <div className="space-y-1">
-            <p className="text-xs text-neutral-300">
-              Built by <strong className="text-neutral-200">Hassan</strong> · Solo builder shipping in public
-            </p>
-            <p className="text-[11px] text-neutral-500 leading-relaxed">
-              I got tired of shipping features that went unseen. So I built this pipeline to automate content generation directly from my commit history.
+        {/* Who it's for */}
+        <section className="pb-24">
+          <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] px-10 py-10">
+            <span className="text-[11px] uppercase tracking-[0.14em] text-neutral-600 block mb-5">Who it&apos;s for</span>
+            <p className="text-xl lg:text-2xl text-neutral-300 leading-relaxed font-medium max-w-3xl">
+              Solo technical founders building SaaS. You ship often but your X timeline is a ghost town. You know building in public is the cheat code — but you&apos;d rather stay in the codebase.
             </p>
           </div>
-        </div>
+        </section>
 
-        <div className="flex items-center gap-4 text-xs font-mono text-neutral-500 shrink-0">
-          <a href="/brand" className="hover:text-neutral-300 transition-colors">
-            Brand System
-          </a>
-          <span>·</span>
-          <a href="https://x.com/CheemaEdu" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-300 transition-colors">
-            X (Twitter)
-          </a>
-          <span>·</span>
-          <a href="https://github.com/Hassan-Cheema/subkitt" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-300 transition-colors">
-            GitHub
-          </a>
-        </div>
+        {/* How it works */}
+        <section id="how" className="pb-24">
+          <div className="flex items-center justify-between mb-12">
+            <span className="text-[11px] uppercase tracking-[0.14em] text-neutral-600">How it works</span>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { n: '01', title: 'Connect GitHub', body: 'SubKitt watches your repos and tracks what you actually ship — features, releases, big commits. Not noise.' },
+              { n: '02', title: 'Get drafts Monday', body: 'Every Monday morning, 5 tweet drafts land in your inbox. No prompts, no blank page — just your work, packaged.' },
+              { n: '03', title: 'Post in 30 seconds', body: 'Pick a draft, tweak it if you want, post it. Your whole week of work, shared in under a minute.' },
+              { n: '04', title: 'See what\'s working', body: 'Every batch tells you which pattern from last week performed best — and explains why this week\'s drafts lean that way. Not a black box.' },
+            ].map(({ n, title, body }) => (
+              <div key={n} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-8 hover:bg-white/[0.04] hover:border-white/[0.12] transition-all">
+                <span className="text-[11px] font-mono text-neutral-700 block mb-8">{n}</span>
+                <h3 className="font-semibold text-white mb-3 text-[15px]">{title}</h3>
+                <p className="text-sm text-neutral-500 leading-relaxed">{body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
 
-      </footer>
+        {/* Philosophy */}
+        <section className="pb-24 max-w-3xl">
+          <p className="text-2xl lg:text-[28px] text-neutral-300 leading-[1.5] font-medium mb-5">
+            Technical founders ship more than they post. The work is there — the audience isn&apos;t, because turning code into content is a second job nobody has time for.
+          </p>
+          <p className="text-lg text-neutral-600 leading-relaxed">
+            You tried to become a creator and it killed your velocity. You&apos;re not a creator — you&apos;re a builder.{' '}
+            <span className="text-neutral-400">Stay in the code. SubKitt handles the distribution.</span>
+          </p>
+        </section>
+
+        {/* CTA block */}
+        <section className="pb-24">
+          <div className="relative rounded-2xl border border-white/[0.08] bg-white/[0.02] px-12 py-16 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.03] to-transparent pointer-events-none" />
+            <div className="absolute -top-20 -left-20 w-[400px] h-[300px] bg-white/[0.03] rounded-full blur-[100px] pointer-events-none" />
+            <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+              <div>
+                <h2 className="text-3xl lg:text-4xl font-bold tracking-[-0.02em] mb-3">
+                  Stop building in silence.
+                </h2>
+                <p className="text-neutral-500 text-[16px]">
+                  Get started and connect GitHub in 30 seconds.
+                </p>
+                <p className="text-neutral-600 text-sm mt-2">
+                  $19/month after early access. First 50 users locked in at <span className="text-neutral-400">$9.50/month forever.</span>
+                </p>
+              </div>
+              <a
+                href="/login"
+                className="flex items-center gap-2.5 bg-white text-[#080808] font-semibold px-7 py-3.5 rounded-xl text-sm hover:bg-neutral-100 transition-all hover:shadow-[0_0_60px_rgba(255,255,255,0.15)] shrink-0"
+              >
+                Get Started — it&apos;s free
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* Founder note */}
+        <section id="founder" className="pb-20 pt-10 border-t border-white/[0.06]">
+          <div className="flex gap-4 items-start max-w-lg">
+            <div className="w-9 h-9 rounded-full bg-white/[0.06] border border-white/[0.1] shrink-0 flex items-center justify-center text-sm font-semibold text-neutral-400">H</div>
+            <div>
+              <p className="text-neutral-300 leading-relaxed mb-2">
+                I&apos;m Hassan. Solo, technical, broke student, building in public.
+              </p>
+              <p className="text-neutral-600 text-sm leading-relaxed mb-5">
+                I got tired of shipping code nobody saw. I refused to waste build time on Twitter growth hacks. So I built the tool I needed.
+              </p>
+              <div className="flex gap-5">
+                <a href="https://x.com/CheemaEdu" target="_blank" rel="noopener noreferrer" className="text-sm text-neutral-600 hover:text-neutral-300 transition-colors">@CheemaEdu on X →</a>
+                <a href="https://github.com/Hassan-Cheema/subkitt" target="_blank" rel="noopener noreferrer" className="text-sm text-neutral-600 hover:text-neutral-300 transition-colors">GitHub →</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
     </main>
   );
 }

@@ -65,9 +65,15 @@ export default function BrandPage() {
       {/* Navigation Header */}
       <nav className="max-w-5xl w-full mx-auto px-6 py-6 flex items-center justify-between z-10">
         <div className="flex items-center gap-2.5">
-          <img src="/subkitt_icon.png" alt="SubKitt Logo" className="w-8 h-8 rounded-lg border border-neutral-900 shadow-md invert" />
+          <svg xmlns="http://www.w3.org/2050/svg" viewBox="0 0 64 64" width="20" height="20">
+            <path
+              d="M47 19 C47 13 38 11 30 13 C20 15.5 17 23 27 27.5 C41 33 44 39 37 46.5 C31 53 21 51.5 17 45"
+              fill="none" stroke="white" strokeWidth="7.5" strokeLinecap="round"
+            />
+          </svg>
           <span className="font-bold tracking-tight text-lg bg-gradient-to-r from-white to-neutral-400 bg-clip-text text-transparent">SubKitt Brand Guidelines</span>
         </div>
+
 
 
 

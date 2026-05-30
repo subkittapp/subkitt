@@ -135,9 +135,15 @@ export default function DashboardClient({ initialUser, initialBatches }: Dashboa
         {/* Navigation & Brand */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-neutral-900 pb-6">
           <div className="flex items-center gap-2.5">
-            <img src="/subkitt_icon.png" alt="SubKitt Logo" className="w-8 h-8 rounded-lg border border-neutral-900 shadow-md invert" />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="20" height="20">
+              <path
+                d="M47 19 C47 13 38 11 30 13 C20 15.5 17 23 27 27.5 C41 33 44 39 37 46.5 C31 53 21 51.5 17 45"
+                fill="none" stroke="white" strokeWidth="7.5" strokeLinecap="round"
+              />
+            </svg>
             <div>
               <h1 className="font-extrabold tracking-tight text-lg bg-gradient-to-r from-white via-neutral-100 to-neutral-400 bg-clip-text text-transparent">SubKitt Dashboard</h1>
+
 
 
 
