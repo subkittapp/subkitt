@@ -30,3 +30,13 @@ CREATE POLICY "Users can view their own draft batches"
 ON public.draft_batches 
 FOR SELECT 
 USING (auth.uid() = user_id);
+
+-- 6. Add is_admin flag to the users table
+ALTER TABLE public.users 
+ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE;
+
+-- 7. Grant is_admin access to febcheema@gmail.com
+UPDATE public.users 
+SET is_admin = TRUE 
+WHERE email = 'febcheema@gmail.com';
+
