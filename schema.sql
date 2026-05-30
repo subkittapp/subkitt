@@ -42,4 +42,15 @@ UPDATE public.users
 SET is_admin = TRUE 
 WHERE email = 'febcheema@gmail.com';
 
+-- 8. Create system_config table for dynamic configs
+CREATE TABLE IF NOT EXISTS public.system_config (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
 
+INSERT INTO public.system_config (key, value)
+VALUES 
+  ('min_line_change', '10'),
+  ('default_ai_provider', 'gemini')
+ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value;
