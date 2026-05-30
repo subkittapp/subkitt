@@ -95,17 +95,70 @@ export default function BrandPage() {
           </p>
         </section>
 
-        {/* Brand Mockup Image Sheet */}
-        <section className="space-y-4">
-          <h2 className="text-xs uppercase tracking-widest text-neutral-500 font-mono">Visual Brand Mockup</h2>
-          <div className="border border-neutral-900 bg-neutral-950/40 rounded-3xl p-4 md:p-6 shadow-2xl overflow-hidden group">
-            <img
-              src="/subkitt_brand_mockup.png"
-              alt="SubKitt Brand Mockup Assets"
-              className="w-full rounded-2xl border border-neutral-900 group-hover:scale-[1.01] transition-transform duration-500 shadow-lg"
-            />
+        {/* Brand Kit Assets Grid */}
+        <section className="space-y-6">
+          <div>
+            <h2 className="text-xs uppercase tracking-widest text-neutral-500 font-mono">Brand Kit Assets</h2>
+            <p className="text-xs text-neutral-450 mt-1">Download individual high-resolution brand assets generated for SubKitt.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Asset 1: Brand Icon */}
+            <div className="glass border border-neutral-900 rounded-3xl p-5 hover:border-neutral-800 transition flex flex-col justify-between gap-4">
+              <div className="space-y-2">
+                <span className="text-[9px] font-mono text-neutral-500 uppercase tracking-wider block">SubKitt Icon Logo</span>
+                <div className="border border-neutral-950 bg-neutral-950/60 rounded-2xl p-4 flex items-center justify-center h-48 overflow-hidden">
+                  <img src="/subkitt_icon.png" alt="SubKitt Icon Logo" className="max-h-full rounded-xl" />
+                </div>
+              </div>
+              <a
+                href="/subkitt_icon.png"
+                download
+                className="w-full text-center bg-neutral-900 border border-neutral-850 hover:bg-neutral-800 text-neutral-300 py-2 rounded-xl text-xs transition duration-300 font-semibold"
+              >
+                Download PNG Icon
+              </a>
+            </div>
+
+            {/* Asset 2: Brand Wordmark */}
+            <div className="glass border border-neutral-900 rounded-3xl p-5 hover:border-neutral-800 transition flex flex-col justify-between gap-4">
+              <div className="space-y-2">
+                <span className="text-[9px] font-mono text-neutral-500 uppercase tracking-wider block">SubKitt Brand Wordmark</span>
+                <div className="border border-neutral-950 bg-neutral-950/60 rounded-2xl p-4 flex items-center justify-center h-48 overflow-hidden">
+                  <img src="/subkitt_wordmark.png" alt="SubKitt Wordmark Logo" className="max-h-full rounded-xl" />
+                </div>
+              </div>
+              <a
+                href="/subkitt_wordmark.png"
+                download
+                className="w-full text-center bg-neutral-900 border border-neutral-850 hover:bg-neutral-800 text-neutral-300 py-2 rounded-xl text-xs transition duration-300 font-semibold"
+              >
+                Download PNG Wordmark
+              </a>
+            </div>
+          </div>
+
+          {/* Asset 3: Full App UI Mockup */}
+          <div className="glass border border-neutral-900 rounded-3xl p-6 hover:border-neutral-800 transition space-y-4">
+            <div className="flex justify-between items-center text-[10px] text-neutral-550 font-mono uppercase tracking-wider">
+              <span>App Interface Dashboard Mockup</span>
+              <span>16:9 High-Res Screen</span>
+            </div>
+            <div className="border border-neutral-950 bg-neutral-950/40 rounded-2xl p-3 overflow-hidden">
+              <img src="/subkitt_app_mockup.png" alt="SubKitt Dashboard Interface Mockup" className="w-full rounded-xl border border-neutral-950 shadow-inner" />
+            </div>
+            <div className="flex justify-end">
+              <a
+                href="/subkitt_app_mockup.png"
+                download
+                className="bg-neutral-900 border border-neutral-850 hover:bg-neutral-800 text-neutral-300 px-6 py-2.5 rounded-xl text-xs transition duration-300 font-semibold"
+              >
+                Download Dashboard Mockup
+              </a>
+            </div>
           </div>
         </section>
+
 
         {/* LOGO SYSTEM SECTION */}
         <section className="space-y-6">
