@@ -44,16 +44,10 @@ export default function Home() {
       {/* Main navigation / Header */}
       <nav className="max-w-5xl w-full mx-auto px-6 py-6 flex items-center justify-between z-10">
         <div className="flex items-center gap-2.5">
-          <svg viewBox="0 0 100 100" className="w-8 h-8 text-emerald-500 fill-none stroke-current" strokeWidth="2.5">
-            <path d="M 25 35 L 12 50 L 25 65" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M 75 35 L 88 50 L 75 65" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M 32 40 L 40 25 L 48 37 C 49 37, 51 37, 52 37 L 60 25 L 68 40 L 65 65 C 60 75, 40 75, 35 65 Z" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M 40 48 L 44 48" strokeLinecap="round" />
-            <path d="M 56 48 L 60 48" strokeLinecap="round" />
-            <path d="M 48 56 L 50 58 L 52 56" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          <img src="/subkitt_icon.png" alt="SubKitt Logo" className="w-8 h-8 rounded-lg border border-neutral-900 shadow-md" />
           <span className="font-bold tracking-tight text-lg bg-gradient-to-r from-white via-neutral-100 to-neutral-400 bg-clip-text text-transparent">SubKitt</span>
         </div>
+
 
         <a
           href="/login"
