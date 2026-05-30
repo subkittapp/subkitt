@@ -135,11 +135,17 @@ export default function DashboardClient({ initialUser, initialBatches }: Dashboa
         {/* Navigation & Brand */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-neutral-900 pb-6">
           <div className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center font-bold text-white shadow-md">
-              S
-            </div>
+            <svg viewBox="0 0 100 100" className="w-8 h-8 text-emerald-500 fill-none stroke-current" strokeWidth="2.5">
+              <path d="M 25 35 L 12 50 L 25 65" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M 75 35 L 88 50 L 75 65" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M 32 40 L 40 25 L 48 37 C 49 37, 51 37, 52 37 L 60 25 L 68 40 L 65 65 C 60 75, 40 75, 35 65 Z" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M 40 48 L 44 48" strokeLinecap="round" />
+              <path d="M 56 48 L 60 48" strokeLinecap="round" />
+              <path d="M 48 56 L 50 58 L 52 56" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
             <div>
               <h1 className="font-extrabold tracking-tight text-lg bg-gradient-to-r from-white via-neutral-100 to-neutral-400 bg-clip-text text-transparent">SubKitt Dashboard</h1>
+
               <p className="text-[11px] text-neutral-500">Manage pipeline settings and historical drafts.</p>
             </div>
           </div>
